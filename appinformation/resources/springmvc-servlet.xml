@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	 xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			   http://www.springframework.org/schema/beans
+			   http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+			   http://www.springframework.org/schema/aop
+			   http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+			   http://www.springframework.org/schema/context
+			   http://www.springframework.org/schema/context/spring-context-3.2.xsd
+			    http://www.springframework.org/schema/tx
+			   http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+			   http://www.springframework.org/schema/mvc
+			   http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+			   
+			   
+			   <!-- 指定扫描控制器 -->
+			   <context:component-scan base-package="cn.jbit.controller"/>
+			   <!-- 使用mvc注解扫描 -->
+			   <mvc:annotation-driven/>
+			   
+			   <!-- 访问静态文件 location 本地 mapping 映射 -->
+			   <mvc:resources location="/statics/" mapping="/statics/**"/>
+			   
+			   <!-- 解决@ResponseBody 输出json数据乱码问题，只能在视图解析器之前配置    -->
+			   <mvc:annotation-driven>
+			    <mvc:message-converters>
+			    <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+			      <property name="supportedMediaTypes" >
+			      <list>
+			      <value>application/json;charset=UTF-8</value>
+			      </list>
+			      </property>
+			    </bean>
+			    <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+   				<property name="supportedMediaTypes">
+   					<list>
+   						<value>text/html;charset=UTF-8</value>
+   						<value>application/json</value>
+   					</list>
+   				</property>
+   				<property name="features">
+   					<list>
+   						<value>WriteDateUseDateFormat</value>
+   					</list>
+   				</property>
+   			</bean>
+			    </mvc:message-converters>
+			   </mvc:annotation-driven>
+			
+			   <!-- 视图解析器 -->
+			   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+			   <property name="prefix" value="/WEB-INF/jsp/" />
+			   <property name="suffix" value=".jsp" />
+			   </bean>
+			    
+			    <!-- 拦截器 -->
+			    <mvc:interceptors>
+			    <mvc:interceptor>
+			    <mvc:mapping path="/sys/**"/>
+			    <bean class="cn.smbms.interceptor.SysInterceptor" />
+			    </mvc:interceptor>
+			    </mvc:interceptors>
+			    
+			    
+			    <!-- 上传文件解析器 -->
+			    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+			     <!-- 文件上传限制最大大小5m -->
+			     <property name="maxUploadSize" value="5000000" />
+			     <!-- 文件上传的字符编码 -->
+			     <property name="defaultEncoding" value="UTF-8" />
+			    </bean>
+			    
+			    
+			    
+			    
+			    
+			    
+			    
+			    
+			    
+			    
+			    
+			    
+			   </beans>
